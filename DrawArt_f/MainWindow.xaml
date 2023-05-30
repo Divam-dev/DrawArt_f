@@ -1,0 +1,64 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wpfToolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+        x:Class="DrawArt_f.MainWindow"
+        KeyDown="Window_KeyDown"
+        Title="DrawArt" Height="700" Width="1200">
+    <Grid Background="#F8F8F8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Background="#f1f1f1">
+            <Button x:Name="newFile" Background="Transparent" BorderThickness="0" Click="newFile_Click" ToolTip="Clear all" >
+                <Image Source="Resources/new.png" Width="25" Height="25" Margin="5" />
+            </Button>
+            <Button x:Name="saveFile" Background="Transparent" BorderThickness="0" Click="saveFile_Click" ToolTip="Save file" >
+                <Image Source="Resources/save.png" Width="25" Height="25" Margin="5"/>
+            </Button>
+            <Button x:Name="btnUndo" Background="Transparent" BorderThickness="0" Click="btnUndo_Click" ToolTip="Undo">
+                <Image Source="Resources/undo.png" Width="25" Height="25" Margin="5"/>
+            </Button>
+            <Button x:Name="btnRedo" Background="Transparent" BorderThickness="0" Click="btnRedo_Click" ToolTip="Redo">
+                <Image Source="Resources/redo.png" Width="25" Height="25" Margin="5"/>
+            </Button>
+            <wpfToolkit:ColorPicker x:Name="colorPicker" SelectedColorChanged="ColorPicker_SelectedColorChanged" />
+            <Slider x:Name="thicknessSlider" Minimum="1" Maximum="20" Value="2" Width="100" Margin="5" ValueChanged="thicknessSlider_ValueChanged" Height="17" />
+            <TextBlock x:Name="penThicknessValue" Text="{Binding ElementName=thicknessSlider, Path=Value, StringFormat='Thickness: {0:F0}'}" Margin="10,0,0,0" VerticalAlignment="Center" />
+        </StackPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Left" Margin="0,0,0,0" Background="#f1f1f1">
+                <Button x:Name="btnNavigate" Background="Transparent" BorderThickness="0" Click="btnNavigate_Click" ToolTip="Navigate">
+                    <Image Source="Resources/cursor.png" Width="25" Height="25" Margin="5"/>
+                </Button>
+                <Button x:Name="btnEdit" Background="Transparent" BorderThickness="0" Click="btnEdit_Click" ToolTip="Edit">
+                    <Image Source="Resources/select.png" Width="25" Height="25" Margin="5"/>
+                </Button>
+                <Button Background="Transparent" BorderThickness="0" Click="btnBrush_Click"  ToolTip="Draw">
+                    <Image Source="Resources/brush.png" Width="25" Height="25" Margin="5" />
+                </Button>
+                <Button Background="Transparent" BorderThickness="0" Click="btnEraser_Click"  ToolTip="Erase">
+                    <Image Source="Resources/eraser.png" Width="25" Height="25" Margin="5"/>
+                </Button>
+
+                <Button x:Name="btnFill" Background="Transparent" BorderThickness="0" Click="btnFill_Click"  ToolTip="Fill">
+                    <Image Source="Resources/paint.png" Width="25" Height="25" Margin="5"/>
+                </Button>
+            </StackPanel>
+            <ScrollViewer x:Name="scrollViewer" Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <InkCanvas x:Name="inkCanvas" Background="White" Width="1920" Height="1080" PreviewMouseWheel="inkCanvas_PreviewMouseWheel" PreviewMouseLeftButtonDown="inkCanvas_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="inkCanvas_PreviewMouseLeftButtonUp" PreviewMouseMove="inkCanvas_PreviewMouseMove"/>
+            </ScrollViewer>
+        </Grid>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,20,0">
+            <Button x:Name="btnResetZoom" Content="Reset" Margin="5" Click="btnResetZoom_Click" />
+            <TextBlock Text="Zoom:" Margin="5" VerticalAlignment="Center" />
+            <Slider x:Name="zoomSlider" Minimum="0.3" Maximum="6" Value="1" Width="100" Margin="5" ValueChanged="zoomSlider_ValueChanged" />
+        </StackPanel>
+    </Grid>
+</Window>
