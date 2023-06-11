@@ -14,20 +14,19 @@ namespace DrawArt_f
 {
     public partial class MainWindow : Window
     {
-        private DrawingAttributes defaultDrawingAttributes;
+        //private DrawingAttributes defaultDrawingAttributes;
         private double currentThickness;
         private List<Stroke> removedStrokes = new List<Stroke>();
 
         public MainWindow()
         {
             InitializeComponent();
-            defaultDrawingAttributes = new DrawingAttributes
+            //defaultDrawingAttributes = new DrawingAttributes
 
-            {
-                Color = Colors.Black,
-            };
+            //{
+            //    Color = Colors.Black,
+            //};
 
-            inkCanvas.DefaultDrawingAttributes = defaultDrawingAttributes;
             colorPicker.SelectedColor = Colors.Black;
             currentThickness = 2;
         }
