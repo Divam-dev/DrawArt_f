@@ -48,12 +48,15 @@ namespace DrawArt_f
 
         private void saveFile_Click(object sender, RoutedEventArgs e)
         {
-            var saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "PNG Image|*.png|JPEG Image|*.jpg|Bitmap Image|*.bmp";
+            var saveFileDialog = new SaveFileDialog
+            {
+                Filter = "PNG Image|*.png|JPEG Image|*.jpg|Bitmap Image|*.bmp"
+            };
+
             if (saveFileDialog.ShowDialog() == true)
             {
-                var width = 1920;
-                var height = 1080;
+                const int width = 1920;
+                const int height = 1080;
                 var rtb = new RenderTargetBitmap(width, height, 96d, 96d, PixelFormats.Default);
 
                 var visual = new DrawingVisual();
@@ -74,7 +77,6 @@ namespace DrawArt_f
                 }
             }
         }
-
 
         private void btnUndo_Click(object sender, RoutedEventArgs e)
         {
