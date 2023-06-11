@@ -25,8 +25,6 @@ namespace DrawArt_f
 
             {
                 Color = Colors.Black,
-                Width = 2,
-                Height = 2
             };
 
             inkCanvas.DefaultDrawingAttributes = defaultDrawingAttributes;
