@@ -52,10 +52,18 @@ namespace DrawArt_f
             saveFileDialog.Filter = "PNG Image|*.png|JPEG Image|*.jpg|Bitmap Image|*.bmp";
             if (saveFileDialog.ShowDialog() == true)
             {
-                var width = (int)inkCanvas.ActualWidth;
-                var height = (int)inkCanvas.ActualHeight;
+                var width = 1920;
+                var height = 1080;
                 var rtb = new RenderTargetBitmap(width, height, 96d, 96d, PixelFormats.Default);
-                rtb.Render(inkCanvas);
+
+                var visual = new DrawingVisual();
+                using (var context = visual.RenderOpen())
+                {
+                    context.DrawRectangle(new SolidColorBrush(Colors.White), null, new Rect(0, 0, width, height));
+                    context.DrawRectangle(new VisualBrush(inkCanvas), null, new Rect(0, 0, width, height));
+                }
+
+                rtb.Render(visual);
 
                 var encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(rtb));
@@ -66,6 +74,7 @@ namespace DrawArt_f
                 }
             }
         }
+
 
         private void btnUndo_Click(object sender, RoutedEventArgs e)
         {
@@ -111,8 +120,6 @@ namespace DrawArt_f
                 }
             }
         }
-
-
 
         private void btnNavigate_Click(object sender, RoutedEventArgs e)
         {
@@ -180,95 +187,7 @@ namespace DrawArt_f
 
         private void btnFill_Click(object sender, RoutedEventArgs e)
         {
-            inkCanvas.EditingMode = InkCanvasEditingMode.None;
-            inkCanvas.MouseUp += InkCanvas_MouseUp;
-        }
-
-        private void InkCanvas_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            Point clickPosition = e.GetPosition(inkCanvas);
-            Color fillColor = inkCanvas.DefaultDrawingAttributes.Color;
-            FloodFill(clickPosition, fillColor);
-            inkCanvas.MouseUp -= InkCanvas_MouseUp;
-        }
-
-        private void FloodFill(Point startPoint, Color fillColor)
-        {
-            RenderTargetBitmap rtb = new RenderTargetBitmap((int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight, 96d, 96d, PixelFormats.Default);
-            rtb.Render(inkCanvas);
-
-            int width = rtb.PixelWidth;
-            int height = rtb.PixelHeight;
-            int startX = (int)startPoint.X;
-            int startY = (int)startPoint.Y;
-
-            byte[] pixels = new byte[width * height * 4];
-            rtb.CopyPixels(pixels, width * 4, 0);
-
-            int startIndex = (startY * width + startX) * 4;
-            Color startColor = Color.FromArgb(pixels[startIndex + 3], pixels[startIndex + 2], pixels[startIndex + 1], pixels[startIndex]);
-
-            if (startColor == fillColor)
-            {
-                return;
-            }
-
-            Queue<Point> queue = new Queue<Point>();
-            queue.Enqueue(startPoint);
-
-            while (queue.Count > 0)
-            {
-                Point currentPoint = queue.Dequeue();
-                int x = (int)currentPoint.X;
-                int y = (int)currentPoint.Y;
-
-                int index = (y * width + x) * 4;
-
-                while (x > 0 && pixels[index - 4] == startColor.B)
-                {
-                    x--;
-                    index -= 4;
-                }
-
-                bool spanUp = false;
-                bool spanDown = false;
-
-                while (x < width && pixels[index] == startColor.B)
-                {
-                    pixels[index + 3] = fillColor.A;
-                    pixels[index + 2] = fillColor.R;
-                    pixels[index + 1] = fillColor.G;
-                    pixels[index] = fillColor.B;
-
-                    if (!spanUp && y > 0 && pixels[index - width * 4] == startColor.B)
-                    {
-                        queue.Enqueue(new Point(x, y - 1));
-                        spanUp = true;
-                    }
-                    else if (spanUp && y > 0 && pixels[index - width * 4] != startColor.B)
-                    {
-                        spanUp = false;
-                    }
-                    if (!spanDown && y < height - 1 && pixels[index + width * 4] == startColor.B)
-                    {
-                        queue.Enqueue(new Point(x, y + 1));
-                        spanDown = true;
-                    }
-                    else if (spanDown && y < height - 1 && pixels[index + width * 4] != startColor.B)
-                    {
-                        spanDown = false;
-                    }
-
-                    x++;
-                    index += 4;
-                }
-            }
-
-            WriteableBitmap wb = new WriteableBitmap(width, height, 96d, 96d, PixelFormats.Pbgra32, null);
-            wb.WritePixels(new Int32Rect(0, 0, width, height), pixels, width * 4, 0);
-
-            ImageBrush ib = new ImageBrush(wb);
-            inkCanvas.Background = ib;
+            inkCanvas.Background = new SolidColorBrush(inkCanvas.DefaultDrawingAttributes.Color);
         }
 
         private void zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
